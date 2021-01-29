@@ -1,27 +1,46 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Alert, TextInput } from 'react-native';
 import MapView, { Marker} from 'react-native-maps';
+import * as Location from 'expo-location';
 
 export default function App() {
 
-  const [region, setRegion] = useState({latitude:'', longitude:'',latitudeDelta:'',longitudeDelta:''});
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(null);
+  const [currlat, setCurrlat] = useState(null);
+  const [currlng, setCurrlng] = useState(null);
   const [searched, setSearched] = useState('');
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
   
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+  const getLocation = async () => {
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('No permission to access location');
+    }
+    else {
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      console.log(location);
+      setLat(Number(location.coords.latitude));
+      console.log("currlat" + currlat);
+      setLong(Number(location.coords.longitude));
+      console.log("currlng" + currlng)
+    }
+  };
 
   const getRegion = () => {
     var url = "http://www.mapquestapi.com/geocoding/v1/address?key=ntGiB5xeGwAEUqKTkfmUsT5MSjlIj0De&location=" + searched.replace(/\s+/g, '');
     fetch(url)
     .then((res) => res.json())
     .then((res) => {
-      setLocation(res.results[0].providedLocation.location);
-      console.log(location);
-      setLat(res.results[0].locations[0].displayLatLng.lat);
+      setLat(Number(res.results[0].locations[0].displayLatLng.lat));
       console.log(lat);
-      setLong(res.results[0].locations[0].displayLatLng.lng);
+      setLong(Number(res.results[0].locations[0].displayLatLng.lng));
       console.log(long)
       
     })
@@ -36,16 +55,16 @@ export default function App() {
       <MapView
       style={{ height:'70%', width:'80%' }}
       region={{
-        latitude: number1,
-        longitude: number2,
-        latitudeDelta: 0.009,
-        longitudeDelta: 0.009
+        latitude: lat,
+        longitude: long,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02
       }}
       >
       <Marker 
       coordinate={{
-        latitude: number1,
-        longitude: number2 }}
+        latitude: lat,
+        longitude: long }}
         pinColor="black"
         title={searched}/>
       </MapView>
