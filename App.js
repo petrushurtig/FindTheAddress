@@ -7,13 +7,9 @@ import * as Location from 'expo-location';
 export default function App() {
 
   const [location, setLocation] = useState(null);
-  const [currlat, setCurrlat] = useState(null);
-  const [currlng, setCurrlng] = useState(null);
   const [searched, setSearched] = useState('');
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
-  const [markers, setMarkers] = useState([]);
-  
   
   useEffect(() => {
     getLocation();
@@ -62,9 +58,8 @@ export default function App() {
       >
        <Marker 
       coordinate={{
-        latitude: lat,
-        longitude: long }}
-        pinColor="black"
+        latitude: number1,
+        longitude: number2}}
         title={searched}/>
       </MapView>
       <TextInput style={{width:'70%', height:40, margin:5, borderBottomColor:'black', borderBottomWidth: 1}} value={searched} onChangeText={(val) => setSearched(val)}></TextInput>
