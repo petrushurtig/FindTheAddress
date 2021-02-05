@@ -12,6 +12,8 @@ export default function App() {
   const [searched, setSearched] = useState('');
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
+  const [markers, setMarkers] = useState([]);
+  
   
   useEffect(() => {
     getLocation();
@@ -25,11 +27,8 @@ export default function App() {
     else {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      console.log(location);
       setLat(Number(location.coords.latitude));
-      console.log("currlat" + currlat);
       setLong(Number(location.coords.longitude));
-      console.log("currlng" + currlng)
     }
   };
 
@@ -42,12 +41,12 @@ export default function App() {
       console.log(lat);
       setLong(Number(res.results[0].locations[0].displayLatLng.lng));
       console.log(long)
-      
     })
     .catch((error) => {
       Alert.alert('Error', error.message);
     })
   }
+  
   const [number1, number2] = [Number(lat), Number(long)];
 
   return (
@@ -55,13 +54,13 @@ export default function App() {
       <MapView
       style={{ height:'70%', width:'80%' }}
       region={{
-        latitude: lat,
-        longitude: long,
+        latitude: number1,
+        longitude: number2,
         latitudeDelta: 0.02,
         longitudeDelta: 0.02
       }}
       >
-      <Marker 
+       <Marker 
       coordinate={{
         latitude: lat,
         longitude: long }}
@@ -78,7 +77,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
